@@ -9,11 +9,12 @@ import scala.Tuple2;
 public class Main{
 
     public static void main(String[] args) {
-        //Pour configurer notre application et setMaster afin de preciser ou notre application va deployer.
+
+        //Pour configurer notre application, nous utilisons setMaster afin de préciser où elle sera déployée.
         SparkConf conf = new SparkConf().setAppName("VentesParVilleRDD").setMaster("local[*]");
         JavaSparkContext sc = new JavaSparkContext(conf);
 
-        // Charger le fichier texte
+        // Charger le fichier texte dans un RDD
         JavaRDD<String> lignes = sc.textFile("ventes.txt");
 
         JavaPairRDD<String, Integer> ventesVille = lignes
@@ -28,7 +29,6 @@ public class Main{
         JavaPairRDD<String, Integer> totalParVille = ventesVille.reduceByKey(Integer::sum);
 
         // Afficher les résultats
-//        totalParVille.foreach(tuple -> System.out.println("Ville : " + tuple._1 + ", Total : " + tuple._2));
         for (Tuple2<String, Integer> tuple : totalParVille.collect()) {
             System.out.println("Ville : " + tuple._1 + ", Total : " + tuple._2);
         }
